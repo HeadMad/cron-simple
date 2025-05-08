@@ -1,4 +1,5 @@
-import parseMinute from './parseMinute.js';
+import parseMinutes from './parseMinutes.js';
+import parseHours from './parseHours.js';
 
 export default function (expr, options = {}) {
 
@@ -22,7 +23,9 @@ export default function (expr, options = {}) {
   
   const self = {
     next() {
-      return parseMinute(min, actualDate);
+
+      parseHours(hour, actualDate);
+      parseMinutes(min, actualDate);
 
       return new Date(actualDate.getTime());
     },
