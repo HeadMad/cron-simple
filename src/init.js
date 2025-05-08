@@ -22,7 +22,7 @@ export default function (expr, options = {}) {
   
   const self = {
     next() {
-      parseMinute(min, actualDate);
+      return parseMinute(min, actualDate);
 
       return new Date(actualDate.getTime());
     },
