@@ -1,5 +1,5 @@
-import parseMinutes from './parseMinutes.js';
-import parseHours from './parseHours.js';
+
+import createSetPointDate from './setPointDate.js';
 
 export default function (expr, options = {}) {
 
@@ -24,8 +24,13 @@ export default function (expr, options = {}) {
   const self = {
     next() {
 
-      const incHour = parseMinutes(min, actualDate);
-      const incDay = parseHours(hour, actualDate, incHour);
+      const setPointDate = createSetPointDate(actualDate);
+
+      const incHour = setPointDate({max: 59, input: min, param: 'Minutes'});
+      const incDay = setPointDate({max: 23, input: hour, inc: incHour, param: 'Hours'});
+      const incMonth = setPointDate({min: 1, max: 31, input: day, inc: incDay, param: 'Date'});
+      const incYear = setPointDate({min: 1, max: 12, input: month, inc: incMonth, param: 'Month'});
+      setPointDate({input: year, inc: incYear, param: 'Year'});
 
       return new Date(actualDate.getTime());
     },

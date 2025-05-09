@@ -1,15 +1,19 @@
-import parseExpression from "./parseExpression.js";
+import parseExpression from "./getValues.js";
 
 export default function(input, date) {
-  let incHour = false;
+  let incHour = 0;
   const current = date.getMinutes();
   
-  if (input.includes('*'))
-   return date.setMinutes(current + 1) && date;
+  if (input.includes('*')) {
+    let nextMinute = current + incHour;
+    incHour += nextMinute === 60;
+    date.setMinutes(nextMinute%60);
+    return incHour;
+  }
 
   const mins = parseExpression(0, 59, input);
 
-  let next = mins.find(m => current < m);
+  let next = mins.findIndex(m => current < m);
 
   if (next === undefined)
     incHour = true;
