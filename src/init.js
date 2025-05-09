@@ -24,8 +24,8 @@ export default function (expr, options = {}) {
   const self = {
     next() {
 
-      parseHours(hour, actualDate);
-      parseMinutes(min, actualDate);
+      const incHour = parseMinutes(min, actualDate);
+      const incDay = parseHours(hour, actualDate, incHour);
 
       return new Date(actualDate.getTime());
     },

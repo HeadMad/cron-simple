@@ -1,13 +1,32 @@
 import parseExpression from "./parseExpression.js";
 
-export default function(input, date) {
+export default function(input, date, incHour = 0) {
+  let incDay = 0;
+
+  const current = date.getHours();
   
-  if (input.includes('*'))
-   return date.setMinutes(date.getMinutes() + 1) && date;
+  if (input.includes('*')) {
+    let nextHour = current + incHour;
+    incDay += nextHour === 24;
+    date.setHourse(nextHour%24);
+    return incDay;
+  }
 
-  const mins = parseExpression(0, 59, input);
+  const hours = parseExpression(0, 23, input);
 
-  date.setMinutes(mins.find(m => date.getMinutes() < m) ?? mins[0]);
+  let hoursIndex = hours.findIndex(h => current < h);
 
-  return date;
+  if (hoursIndex === -1)
+    incDay = 1;
+
+  hoursIndex += incHour;
+
+  if (hoursIndex === hours.length) {
+    incDay = 1;
+    hoursIndex = 0;
+  }
+
+  date.setHours(hours[hoursIndex]);
+
+  return incDay;
 }
