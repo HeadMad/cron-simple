@@ -1,5 +1,5 @@
 
-import createSetPointDate from './setPointDate.js';
+import createPoint from './createPoint.js';
 
 export default function (expr, options = {}) {
 
@@ -24,13 +24,13 @@ export default function (expr, options = {}) {
   const self = {
     next() {
 
-      const setPointDate = createSetPointDate(actualDate);
+      const Point = createPoint(actualDate);
 
-      const incHour = setPointDate({max: 59, input: min, param: 'Minutes'});
-      const incDay = setPointDate({max: 23, input: hour, inc: incHour, param: 'Hours'});
-      const incMonth = setPointDate({min: 1, max: 31, input: day, inc: incDay, param: 'Date'});
-      const incYear = setPointDate({min: 1, max: 12, input: month, inc: incMonth, param: 'Month'});
-      setPointDate({input: year, inc: incYear, param: 'Year'});
+      const minPoint = Point(min, 'Minutes').minmax(0, 59).parse();
+      const hourPoint = Point(hour, 'Hours').minmax(0, 23).inc(minPoint.incParent).parse();
+      const dayPoint =  Point(day, 'Date').minmax(0, 31).inc(hourPoint.incParent).parse();
+      const monthPoint = Point(month, 'Month').minmax(1, 12).inc(dayPoint.incParent).parse();
+      const yearPoint = Point(month, 'FullYear').inc(monthPoint.incParent).parse();
 
       return new Date(actualDate.getTime());
     },
