@@ -30,14 +30,16 @@ export default function (expr, options = {}) {
 
       const Point = createPoint(actualDate);
 
-      const minPoint = Point(min, 'Minutes').minmax(0, 59).parse();
+      // TODO
+      // if parent in more then curerent parent param, pass increment
+      const minPoint = Point(min, 'Minutes').minmax(0, 59).inc(1).parse();
       const hourPoint = Point(hour, 'Hours').minmax(0, 23).inc(minPoint.incParent).parse();
       const dayPoint =  Point(day, 'Date').minmax(1, 31).inc(hourPoint.incParent).parse();
       const monthPoint = Point(month, 'Month').alt(MONTHS).minmax(0, 11).inc(dayPoint.incParent).parse();
       const weekdayPoint = Point(weekday, 'Day').alt(WEEKDAYS).minmax(0, 6).inc(hourPoint.incParent).parse();
       const yearPoint = Point(year, 'FullYear').inc(monthPoint.incParent).parse();
 
-      return new Date(actualDate.getTime());
+      return actualDate;
     },
 
     take(num) {
