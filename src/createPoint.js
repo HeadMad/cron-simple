@@ -3,6 +3,7 @@ export default (date) => function (input, param) {
   let incSelf = 0;
   let min = 0;
   let max = Infinity;
+  let alt;
 
 
   const self = {
@@ -14,6 +15,11 @@ export default (date) => function (input, param) {
 
     inc(value) {
       incSelf = value;
+      return self;
+    },
+
+    alt(value) {
+      alt = value;
       return self;
     },
 
@@ -36,7 +42,7 @@ export default (date) => function (input, param) {
         return self;
       }
 
-      const values = getValues(min, max, input);
+      const values = getValues(min, max, input, alt);
 
       let valuesIndex = values.findIndex(value => currentValue < value);
 
@@ -59,7 +65,12 @@ export default (date) => function (input, param) {
   return self;
 }
 
-function getValues(min, max, input) {
+function getValues(min, max, input, alt) {
+  input = input.toUpperCase();
+
+  if (alt) 
+    input = alt.reduce((acc, value, i) => acc.replaceAll(value, i), input);
+
   const result = input.split(',').map((expr) => {
 
     if (/^\d+$/.test(expr))
@@ -84,4 +95,8 @@ function getValues(min, max, input) {
   }).flat().sort().filter(num => num >= min && num <= max);
 
   return [...new Set(result)];
+}
+
+function setWeekday(date, value) {
+  date.setDate(date.getDate() + (value - date.getDay()));
 }
