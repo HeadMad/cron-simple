@@ -32,13 +32,16 @@ export default (date) => function (input, param) {
     },
 
     parse() {
+      if (input.includes('?'))
+        return self;
+
       const currentValue = date['get' + param]();
 
       if (input.includes('*')) {
         let nextValue = currentValue + incSelf;
         const maxPlus = max + 1;
         incParent += Number(nextValue === maxPlus);
-        date['set' + param](nextValue % maxPlus);
+        setParam(date, param, nextValue % maxPlus);
         return self;
       }
 
@@ -56,7 +59,7 @@ export default (date) => function (input, param) {
         valuesIndex = 0;
       }
 
-      date['set' + param](values[valuesIndex]);
+      setParam(date, param, values[valuesIndex]);
 
       return self;
     }
@@ -99,4 +102,11 @@ function getValues(min, max, input, alt) {
 
 function setWeekday(date, value) {
   date.setDate(date.getDate() + (7+(value - date.getDay()))%7);
+}
+
+function setParam(date, param, value) {
+  if (param === 'Day')
+    return setWeekday(date, value);
+
+  date['set' + param](value);
 }
