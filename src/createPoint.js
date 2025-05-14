@@ -30,9 +30,10 @@ export default (date) => function (input, param) {
 
       if (input.includes('*')) {
         let nextValue = currentValue + incSelf;
-        incParent += nextValue === 24;
-        date['set' + param](nextValue % 24);
-        return incParent;
+        const maxPlus = max + 1;
+        incParent += Number(nextValue === maxPlus);
+        date['set' + param](nextValue % maxPlus);
+        return self;
       }
 
       const values = getValues(min, max, input);
@@ -50,6 +51,8 @@ export default (date) => function (input, param) {
       }
 
       date['set' + param](values[valuesIndex]);
+
+      return self;
     }
   };
 

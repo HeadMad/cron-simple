@@ -28,9 +28,10 @@ export default function (expr, options = {}) {
 
       const minPoint = Point(min, 'Minutes').minmax(0, 59).parse();
       const hourPoint = Point(hour, 'Hours').minmax(0, 23).inc(minPoint.incParent).parse();
-      const dayPoint =  Point(day, 'Date').minmax(0, 31).inc(hourPoint.incParent).parse();
-      const monthPoint = Point(month, 'Month').minmax(1, 12).inc(dayPoint.incParent).parse();
-      const yearPoint = Point(month, 'FullYear').inc(monthPoint.incParent).parse();
+      const dayPoint =  Point(day, 'Date').minmax(1, 31).inc(hourPoint.incParent).parse();
+      const monthPoint = Point(month, 'Month').minmax(0, 11).inc(dayPoint.incParent).parse();
+      const weekdayPoint = Point(weekday, 'Month').minmax(0, 6).inc(hourPoint.incParent).parse();
+      const yearPoint = Point(year, 'FullYear').inc(monthPoint.incParent).parse();
 
       return new Date(actualDate.getTime());
     },
