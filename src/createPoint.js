@@ -98,5 +98,5 @@ function getValues(min, max, input, alt) {
 }
 
 function setWeekday(date, value) {
-  date.setDate(date.getDate() + (value - date.getDay()));
+  date.setDate(date.getDate() + (7+(value - date.getDay()))%7);
 }
