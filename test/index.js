@@ -1,5 +1,11 @@
 import {init} from '../index.js';
 
-const expr = process.argv.slice(2).join(' ');
+const args = process.argv.slice(2);
 
-console.log('Cron expression: ', init(expr).next().toString());
+if (args[0] === 'next') {
+  console.log(init(args[1]).next().toString());
+
+} else if (args[0] === 'take') {
+  console.log(init(args[2]).take(args[1]).map(date => date.toString()));
+}
+

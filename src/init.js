@@ -5,45 +5,53 @@ const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', '
 
 const WEEKDAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
-export default function (expr, options = {}) {
+export default init;
+
+function init(expr, options = {}) {
 
   let {
     timezone = Intl.DateTimeFormat().resolvedOptions().timeZone,
     currentDate = new Date(),
     startDate = currentDate,
-    finishDate = new Date(),
+    finishDate = currentDate,
   } = options;
 
   const actualDate = new Date(currentDate.getTime());
 
   const splitted = expr.split(/\s+/);
 
-  const [min, hour, day, month, weekday, year = currentDate.getFullYear()] = splitted;
+  const [min, hour, day, month, weekday, year = String(currentDate.getFullYear())] = splitted;
   let isInfinity = false;
 
   if (year === '*')
     isInfinity = true;
 
+  const Point = createPoint(actualDate);
+  const minPoint     = Point('Minutes').minmax(0, 59);
+  const hourPoint    = Point('Hours').minmax(0, 23);
+  const dayPoint     = Point('Date').minmax(1, 31);
+  const monthPoint   = Point('Month').alt(MONTHS).minmax(0, 11);
+  const weekdayPoint = Point('Day').alt(WEEKDAYS).minmax(0, 6);
+  const yearPoint    = Point('FullYear').minmax(startDate.getFullYear(), isInfinity ? Infinity : finishDate.getFullYear());
+
   
   const self = {
     next() {
-
-      const Point = createPoint(actualDate);
-
       // TODO
       // if parent in more then curerent parent param, pass increment
-      const minPoint = Point(min, 'Minutes').minmax(0, 59).inc(1).parse();
-      const hourPoint = Point(hour, 'Hours').minmax(0, 23).inc(minPoint.incParent).parse();
-      const dayPoint =  Point(day, 'Date').minmax(1, 31).inc(hourPoint.incParent).parse();
-      const monthPoint = Point(month, 'Month').alt(MONTHS).minmax(0, 11).inc(dayPoint.incParent).parse();
-      const weekdayPoint = Point(weekday, 'Day').alt(WEEKDAYS).minmax(0, 6).inc(hourPoint.incParent).parse();
-      const yearPoint = Point(year, 'FullYear').inc(monthPoint.incParent).parse();
+      const incMin = minPoint.inc(1).parse(min).incParent;
+      const incHour = hourPoint.inc(incMin).parse(hour).incParent;
+      const incDay =  dayPoint.inc(incHour).parse(day).incParent;
+      const incMonth = monthPoint.inc(incDay).parse(month).incParent;
+      const incWeekday = weekdayPoint.inc(incHour).parse(weekday).incParent;
+      const incYear = yearPoint.inc(incMonth).parse(year).incParent;
 
-      return actualDate;
+      return new Date(actualDate.getTime());
     },
 
     take(num) {
-      
+      let cron = init(expr, options);
+      return Array.from({ length: num }, () => cron.next());
     }
   }
 

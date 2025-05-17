@@ -1,4 +1,4 @@
-export default (date) => function (input, param) {
+export default (date) => function (param) {
   let incParent = 0;
   let incSelf = 0;
   let min = 0;
@@ -31,7 +31,8 @@ export default (date) => function (input, param) {
       return date;
     },
 
-    parse() {
+    parse(input) {
+      
       if (input.includes('?'))
         return self;
 
