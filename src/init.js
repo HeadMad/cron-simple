@@ -27,19 +27,19 @@ function init(expr, options = {}) {
     isInfinity = true;
 
   const Point = createPoint(actualDate);
-  const minPoint     = Point('Minutes').minmax(0, 59);
-  const hourPoint    = Point('Hours').minmax(0, 23);
-  const dayPoint     = Point('Date').minmax(1, 31);
-  const monthPoint   = Point('Month').alt(MONTHS).minmax(0, 11);
-  const weekdayPoint = Point('Day').alt(WEEKDAYS).minmax(0, 6);
-  const yearPoint    = Point('FullYear').minmax(startDate.getFullYear(), isInfinity ? Infinity : finishDate.getFullYear());
+  const minPoint     = Point(0).minmax(0, 59);
+  const hourPoint    = Point(1).minmax(0, 23);
+  const dayPoint     = Point(2).minmax(1, 31);
+  const monthPoint   = Point(3).alt(MONTHS).minmax(0, 11);
+  const weekdayPoint = Point(4).alt(WEEKDAYS).minmax(0, 6);
+  const yearPoint    = Point(5).minmax(startDate.getFullYear(), isInfinity ? Infinity : finishDate.getFullYear());
 
   
   const self = {
     next() {
       // TODO
       // if parent in more then curerent parent param, pass increment
-      const incMin = minPoint.inc(1).parse(min).incParent;
+      const incMin = minPoint.parse(min).incParent;
       const incHour = hourPoint.inc(incMin).parse(hour).incParent;
       const incDay =  dayPoint.inc(incHour).parse(day).incParent;
       const incMonth = monthPoint.inc(incDay).parse(month).incParent;

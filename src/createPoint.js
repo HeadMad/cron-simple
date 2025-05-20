@@ -1,4 +1,8 @@
-export default (date) => function (param) {
+import dateParams from './dateParams.js';
+
+export default (date) => function (paramIndex) {
+  let param = dateParams[paramIndex];
+  let parentParam = dateParams[(paramIndex + 1)%6];
   let incParent = 0;
   let incSelf = 0;
   let min = 0;
@@ -48,10 +52,14 @@ export default (date) => function (param) {
 
       const values = getValues(min, max, input, alt);
 
-      let valuesIndex = values.findIndex(value => currentValue < value);
+      
+      let valuesIndex = values.findIndex(value => value > currentValue);
+      console.log(param, ': ', values, ' ', currentValue, ' ', valuesIndex, ' ', incSelf)
 
-      if (valuesIndex === -1)
+      if (valuesIndex === -1) {
         incParent = 1;
+        valuesIndex = 0;
+      }
 
       valuesIndex += incSelf;
 
