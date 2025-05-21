@@ -1,1 +1,1 @@
-export default ['Minutes', 'Hours', 'Date', 'Month', 'Day', 'FullYear'];
+export default ['Minutes', 'Hours', 'Date', 'Month', 'FullYear'];
