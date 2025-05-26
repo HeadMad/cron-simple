@@ -1,121 +1,29 @@
-import dateParams from './dateParams.js';
+import PointHours from './PointHours.js';
+import PointMinutes from './PointMinutes.js';
+import PointDay from './PointDay.js';
+import PointWeekday from './PointWeekday.js';
+import PointMonth from './PointMonth.js';
+import PointYear from './PointYear.js';
 
-export default (date) => function (paramIndex) {
-  let param = dateParams[paramIndex];
-  let parentParam = dateParams[(paramIndex + 1)%6];
-  let incParent = 0;
-  let incSelf = 0;
-  let min = 0;
-  let max = Infinity;
-  let alt;
-
-
-  const self = {
-    minmax(mn, mx) {
-      min = mn;
-      max = mx;
-      return self;
+export default function(currentDate) {
+  return {
+    get minutes() {
+      return new PointMinutes(currentDate);
     },
-
-    inc(value) {
-      incSelf = value;
-      return self;
+    get hours() {
+      return new PointHours(currentDate);
     },
-
-    alt(value) {
-      alt = value;
-      return self;
+    get day() {
+      return new PointDay(currentDate);
     },
-
-    get incParent() {
-      return incParent;
+    get weekday() {
+      return new PointWeekday(currentDate);
     },
-
-    get date() {
-      return date;
+    get month() {
+      return new PointMonth(currentDate);
     },
-
-    parse(input) {
-      
-      if (input.includes('?'))
-        return self;
-
-      const currentValue = date['get' + param]();
-
-      if (input.includes('*')) {
-        let nextValue = currentValue + incSelf;
-        const maxPlus = max + 1;
-        incParent += Number(nextValue === maxPlus);
-        setParam(date, param, nextValue % maxPlus);
-        return self;
-      }
-
-      const values = getValues(min, max, input, alt);
-
-      
-      let valuesIndex = values.findIndex(value => value > currentValue);
-      console.log(param, ': ', values, ' ', currentValue, ' ', valuesIndex, ' ', incSelf)
-
-      if (valuesIndex === -1) {
-        incParent = 1;
-        valuesIndex = 0;
-      }
-
-      valuesIndex += incSelf;
-
-      if (valuesIndex === values.length) {
-        incParent = 1;
-        valuesIndex = 0;
-      }
-
-      setParam(date, param, values[valuesIndex]);
-
-      return self;
-    }
+    get year() {
+      return new PointYear(currentDate);
+    },
   };
-
-  return self;
-}
-
-function getValues(min, max, input, alt) {
-  input = input.toUpperCase();
-
-  if (alt) 
-    input = alt.reduce((acc, value, i) => acc.replaceAll(value, i), input);
-
-  const result = input.split(',').map((expr) => {
-
-    if (/^\d+$/.test(expr))
-      return Number(expr);
-
-    if (/^\d+\/\d+$/.test(expr)) {
-      const [start, offset] = expr.split('/').map(Number);
-      if (offset < 1)
-        throw new Error(`The divisor in expression "${expr}" must be greater than zero.`)
-
-      const length = Math.floor((max - start) / offset) + 1;
-
-      return Array.from({ length }, (_, i) => start + i * offset);
-    }
-
-    if (/^\d+-\d+$/.test(expr)) {
-      const [start, end] = expr.split('-').map(Number);
-      const length = end - start + 1;
-
-      return Array.from({ length }, (_, i) => i + start);
-    }
-  }).flat().sort().filter(num => num >= min && num <= max);
-
-  return [...new Set(result)];
-}
-
-function setWeekday(date, value) {
-  date.setDate(date.getDate() + (7+(value - date.getDay()))%7);
-}
-
-function setParam(date, param, value) {
-  if (param === 'Day')
-    return setWeekday(date, value);
-
-  date['set' + param](value);
 }

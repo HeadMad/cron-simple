@@ -1,26 +1,12 @@
-import dateParams from './dateParams.js';
-
 class Point {
-  constructor(date, paramIndex) {
+  constructor(date) {
     this.date = date;
-    this.param = dateParams[paramIndex];
-    this.currentValue = date['get' + this.param]();
-    const parentParam = dateParams[(paramIndex + 1) % 6];
-    this.currentParentValue = date['get' + parentParam]();
     this.selfIncrement = 0;
     this.parentIncrement = 0;
-    this.min = 0;
-    this.max = Infinity;
   }
 
-  minmax(mn, mx) {
-    this.min = mn;
-    this.max = mx;
-    return this;
-  }
-
-  increment() {
-    this.selfIncrement += 1;
+  increment(value) {
+    this.selfIncrement += value;
     return this;
   }
 
@@ -54,21 +40,19 @@ class Point {
 
   parse(input) {
     if (input.includes('?'))
-      return self;
+      return this;
 
     if (input.includes('*')) {
       let nextValue = this.currentValue + this.selfIncrement;
       const maxPlus = this.max + 1;
       this.parentIncrement += Number(nextValue === maxPlus);
-      setParam(nextValue%maxPlus);
-      return self;
+      this.setParam(nextValue%maxPlus);
+      return this;
     }
 
-    const values = getValues(input);
-
+    const values = this.getValues(input);
 
     let valuesIndex = values.findIndex(value => value > this.currentValue);
-    console.log(this.param, ': ', values, ' ', this.currentValue, ' ', valuesIndex, ' ', this.selfIncrement)
 
     if (valuesIndex === -1) {
       this.parentIncrement = 1;
@@ -82,14 +66,10 @@ class Point {
       valuesIndex = 0;
     }
 
-    setParam(value);
+    this.setParam(values[valuesIndex]);
 
     return this;
 
-  }
-
-  setParam(value) {
-    this.date['set' + this.param](value);
   }
 
 };
