@@ -26,6 +26,9 @@ function init(expr, options = {}) {
     next() {
       // TODO
       // if parent in more then curerent parent param, pass increment
+
+      // TODO
+      // Find start and end date from expression
   
   
       const Point = createPoint(actualDate);
