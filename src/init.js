@@ -29,7 +29,7 @@ function init(expr, options = {}) {
   
   
       const Point = createPoint(actualDate);
-      const minPoint = Point.minutes.parse(min);
+      const minPoint = Point.minutes.increment(0).parse(min);
       const hourPoint = Point.hours.increment(minPoint.parentIncrement).parse(hour);
       const dayPoint = Point.day.increment(hourPoint.parentIncrement).parse(day);
       const monthPoint = Point.month.increment(dayPoint.parentIncrement).parse(month);
