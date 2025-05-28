@@ -13,6 +13,13 @@ class PointWeekday extends Point {
     this.date.setDate(this.date.getDate() + (7+(value - this.currentValue))%7);
   }
 
+  parse(input) {
+    if (input.includes('?'))
+      return this;
+
+    return super.parse(input);
+  } 
+
   getValues(input) {
     const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
     input = days.reduce((acc, day, i) => acc.replaceAll(day, i), input.toUpperCase());

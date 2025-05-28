@@ -9,6 +9,13 @@ class PointDay extends Point {
     this.currentParentValue = date.getMonth();
   }
 
+  parse(input) {
+    if (input.includes('?'))
+      return this;
+
+    return super.parse(input);
+  } 
+
   setParam(value) {
     this.date.setDate(value);
   }

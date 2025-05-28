@@ -6,6 +6,7 @@ class Point {
   }
 
   increment(value) {
+    console.log(value)
     this.selfIncrement += value;
     return this;
   }
@@ -39,13 +40,11 @@ class Point {
   }
 
   parse(input) {
-    if (input.includes('?'))
-      return this;
 
     if (input.includes('*')) {
       let nextValue = this.currentValue + this.selfIncrement;
       const maxPlus = this.max + 1;
-      this.parentIncrement += Number(nextValue === maxPlus);
+      this.parentIncrement = Number(nextValue === maxPlus);
       this.setParam(nextValue%maxPlus);
       return this;
     }
@@ -53,7 +52,7 @@ class Point {
     const values = this.getValues(input);
 
     let valuesIndex = values.findIndex(value => value > this.currentValue);
-
+ 
     if (valuesIndex === -1) {
       this.parentIncrement = 1;
       valuesIndex = 0;

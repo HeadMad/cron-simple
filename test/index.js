@@ -9,7 +9,7 @@ if (args[0] === 'next') {
   take(args[1], args[2]);
 
 } else if (args[0] === undefined) {
-  take(4, '42 3 27 5 * 2025-2026');
+  next('42 3 27 5 * 2025-2026');
 
 } 
 
