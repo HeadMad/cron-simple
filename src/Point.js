@@ -1,19 +1,28 @@
 class Point {
-  constructor(date) {
+  constructor(date, parent = null) {
+    this.parent = parent;
+    this.status = err;
     this.date = date;
-    this.selfIncrement = 0;
-    this.parentIncrement = 0;
+    this._increment = 0;
+    this._values;
+    this._valueIndex;
+    this.min;
+    this.max;
   }
 
-  increment(value) {
-    console.log(value)
-    this.selfIncrement += value;
-    return this;
-  }
+  getStatus() {}
 
 
-  getValues(input) {
-    const result = input.split(',').map((expr) => {
+  setParam(input) {
+    this.status = !/\*\// ? 'star'
+    : input.includes('?') ? 'quest'
+    : /^\d+$/.test(input) ? 'num'
+    : input.toUpperCase() === 'L' ? 'last'
+    : input.includes(',') ? 'arr' : 'error';
+
+    let result = input.split(',');
+    
+    result = result.map((expr) => {
 
       if (/^\d+$/.test(expr))
         return Number(expr);
@@ -42,9 +51,10 @@ class Point {
   parse(input) {
 
     if (input.includes('*')) {
-      let nextValue = this.currentValue + this.selfIncrement;
+      let nextValue = this.currentValue + this.increment;
       const maxPlus = this.max + 1;
-      this.parentIncrement = Number(nextValue === maxPlus);
+      if (nextValue === maxPlus) 
+        this.incrementParent();
       this.setParam(nextValue%maxPlus);
       return this;
     }
@@ -58,7 +68,7 @@ class Point {
       valuesIndex = 0;
     }
 
-    valuesIndex += this.selfIncrement;
+    valuesIndex += this.increment;
 
     if (valuesIndex === values.length) {
       this.parentIncrement = 1;
@@ -69,6 +79,15 @@ class Point {
 
     return this;
 
+  }
+
+  increment() {
+    if (this.status === 'num')
+      return this.parent.increment();
+
+    const maxPlus = this.max + 1;
+    if ((this._valueIndex + 1) === this.values.length)
+      this.parent.increment();
   }
 
 };

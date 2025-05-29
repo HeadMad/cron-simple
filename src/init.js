@@ -20,8 +20,17 @@ function init(expr, options = {}) {
 
   if (year.includes('*'))
     isInfinity = true;
-  
-  
+
+  const Point = createPoint(actualDate);
+
+  const yearPoint = Point.year(year);
+  const monthPoint = Point.month(month, yearPoint);
+  const weekdayPoint = Point.weekday(weekday, monthPoint);
+  const dayPoint = Point.day(day, monthPoint);
+  const hourPoint = Point.hoursparse(hour, dayPoint);
+  const minPoint = Point.minutes(min, hourPoint);
+
+
   const self = {
     next() {
       // TODO
@@ -29,15 +38,14 @@ function init(expr, options = {}) {
 
       // TODO
       // Find start and end date from expression
-  
-  
-      const Point = createPoint(actualDate);
-      const minPoint = Point.minutes.increment(0).parse(min);
-      const hourPoint = Point.hours.increment(minPoint.parentIncrement).parse(hour);
-      const dayPoint = Point.day.increment(hourPoint.parentIncrement).parse(day);
-      const monthPoint = Point.month.increment(dayPoint.parentIncrement).parse(month);
-      const weekdayPoint = Point.weekday.increment(dayPoint.parentIncrement).parse(weekday);
-      const yearPoint = Point.year.increment(monthPoint.parentIncrement).parse(year);
+
+
+      yearPoint.parse();
+      monthPoint.parse();
+      weekdayPoint.parse();
+      dayPoint.parse();
+      hourPoint.parse();
+      minPoint.parse();
 
       return new Date(actualDate.getTime());
     },
@@ -49,6 +57,6 @@ function init(expr, options = {}) {
   }
 
 
-  
+
   return self;
 }
